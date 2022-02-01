@@ -48,7 +48,7 @@ def convert_to_std_format(file_name):
         return c_file_name
     
     elif (f_extn == ".raw"):
-        o_data, o_sr = sf.read(file_name,samplerate=16000,channels = 1, format='RAW',subtype='PCM_16')
+        o_data, o_sr = sf.read(file_name,samplerate=22050,channels = 1, format='RAW',subtype='PCM_32')
         c_file_name = f_name + ".ogg"
         sf.write(c_file_name, o_data, o_sr)        
         return c_file_name
