@@ -14,6 +14,8 @@ from os import path
 import pathlib
 from flask import json
 from werkzeug.exceptions import HTTPException
+import logging
+logging.basicConfig(filename='app.log',  level=logging.INFO,format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
 
 UPLOAD_FOLDER = 'uploads'
 IMAGE_FOLDER = 'static'
@@ -160,8 +162,9 @@ def classify_and_show_results():
             img_name = class_label_image((predicted_class[0]))
             img_path = os.path.join(app.config['IMAGE_FOLDER'],img_name)
             # Delete uploaded file
-            os.remove(filename)
+            # os.remove(filename)
             # Render results
+            logging.info("Filename:{}, Detected Sound: {}".format(filename,img_name))
             return render_template("results.html",
                 filename=filename,
                 detected_sound=img_name
