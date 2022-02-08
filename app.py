@@ -127,20 +127,18 @@ def get_numpy_array(features_df):
 
 def class_label(argument):
     classes = {
-        0: "Pressure-Cooker",
-        1: "Baby-Cry",
-        2: "Ambient-Sound",
-        3: "Rain"
+        0: "Baby-Cry",
+        1: "Rain"
+        # 2: "Ambient-Sound"
     }
     return classes.get(argument, "Unidentified Sound")
 
 
 def class_label_image(argument):
     classes = {
-        0: "PRESSURE-COOKER.jpg",
-        1: "BABY-CRY.jpg",
-        2: "AMBIENT-SOUND.jpg",
-        3: "RAIN.jpg"
+        0: "BABY-CRY.jpg",
+        1: "RAIN.jpg"
+        # 2: "AMBIENT-SOUND.jpg"
     }
     return classes.get(argument, "UNKNOWN.jpg")
 
