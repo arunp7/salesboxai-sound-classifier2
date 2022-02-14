@@ -156,13 +156,28 @@ def classify_and_show_results():
             prediction_feature = np.expand_dims(np.array([prediction_feature]),axis=2)
             predicted_vector = model.predict_classes(prediction_feature)
             predicted_class = le.inverse_transform(predicted_vector)
-            final_pred = class_label(predicted_class[0])
-            img_name = class_label_image((predicted_class[0]))
-            img_path = os.path.join(app.config['IMAGE_FOLDER'],img_name)
+            predicted_proba_vector = model.predict_proba([prediction_feature])
+            f =  predicted_proba_vector.flatten()
+            proba_baby_cry = f[0]
+            proba_rain = f[1]
+
+            if(proba_baby_cry > 0.95):
+                probability =  proba_baby_cry               
+                img_name = class_label_image(0)
+            elif (proba_rain > 0.95):
+                probability =  proba_baby_cry               
+                img_name = class_label_image(1)
+            else:
+                probability = 0
+                img_name = class_label_image(2)
+            
+            # final_pred = class_label(predicted_class[0])
+            # img_name = class_label_image((predicted_class[0]))
+            # img_path = os.path.join(app.config['IMAGE_FOLDER'],img_name)
             # Delete uploaded file
             # os.remove(filename)
             # Render results
-            logging.info("Filename:{}, Detected Sound: {}".format(filename,img_name))
+            logging.info("Filename:{}, Detected Sound: {}".format(filename,img_name,probability))
             return render_template("results.html",
                 filename=filename,
                 detected_sound=img_name
