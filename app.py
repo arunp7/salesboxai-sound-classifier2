@@ -164,7 +164,7 @@ def classify_and_show_results():
             if(proba_baby_cry > 0.95):
                 probability =  proba_baby_cry               
                 img_name = class_label_image(0)
-            elif (proba_rain > 0.95):
+            elif (proba_rain >= 0.99):
                 probability =  proba_baby_cry               
                 img_name = class_label_image(1)
             else:
