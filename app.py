@@ -71,7 +71,7 @@ def check_duration(file_name):
 def get_features(file_name):
     s_file = convert_to_std_format(file_name)
     if s_file:
-        X, sample_rate = librosa.load(s_file, mono=True,dtype='float32')
+        X, sample_rate = librosa.load(s_file, mono=True,dtype='float32',duration=5)
 
     # mfcc (mel-frequency cepstrum)
     mfccs = librosa.feature.mfcc(y=X, sr=sample_rate, n_mfcc=40)
@@ -128,17 +128,17 @@ def get_numpy_array(features_df):
 def class_label(argument):
     classes = {
         0: "Baby-Cry",
-        1: "Rain"
-        # 2: "Ambient-Sound"
+        1: "Pressure-Cooker",
+        2: "Ambient-Sound"
     }
-    return classes.get(argument, "Unidentified Sound")
+    return classes.get(argument, "Unknown Sound")
 
 
 def class_label_image(argument):
     classes = {
         0: "BABY-CRY.jpg",
-        1: "RAIN.jpg"
-        # 2: "AMBIENT-SOUND.jpg"
+        1: "PRESSURE-COOKER.jpg",
+        2: "AMBIENT-SOUND.jpg"
     }
     return classes.get(argument, "UNKNOWN.jpg")
 
@@ -159,17 +159,21 @@ def classify_and_show_results():
             predicted_proba_vector = model.predict_proba([prediction_feature])
             f =  predicted_proba_vector.flatten()
             proba_baby_cry = f[0]
-            proba_rain = f[1]
+            proba_cooker = f[1]
+            proba_ambient = f[2]
 
-            if(proba_baby_cry > 0.95):
+            if(proba_baby_cry > 0.99):
                 probability =  proba_baby_cry               
                 img_name = class_label_image(0)
-            elif (proba_rain >= 0.99):
-                probability =  proba_baby_cry               
+            elif (proba_cooker >= 0.99):
+                probability =  proba_cooker               
                 img_name = class_label_image(1)
-            else:
-                probability = 0
+            elif (proba_ambient >= 0.95):
+                probability =  proba_ambient               
                 img_name = class_label_image(2)
+            else:
+                probability = [proba_baby_cry,proba_cooker,proba_ambient]
+                img_name = class_label_image(3)
             
             # final_pred = class_label(predicted_class[0])
             # img_name = class_label_image((predicted_class[0]))
@@ -177,7 +181,7 @@ def classify_and_show_results():
             # Delete uploaded file
             # os.remove(filename)
             # Render results
-            logging.info("Filename:{}, Detected Sound: {}".format(filename,img_name,probability))
+            logging.info("Filename:{}, Detected Sound: {} Probability: {}".format(filename,img_name,probability))
             return render_template("results.html",
                 filename=filename,
                 detected_sound=img_name
